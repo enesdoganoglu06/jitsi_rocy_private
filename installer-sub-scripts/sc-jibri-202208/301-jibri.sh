@@ -83,6 +83,18 @@ done
 # ------------------------------------------------------------------------------
 lxc-attach -n $MACH -- bash <<EOS
 set -e
+echo "[Resolve]" > /etc/systemd/resolved.conf
+echo "DNS=8.8.8.8" >> /etc/systemd/resolved.conf
+echo "FallbackDNS=8.8.4.4" >> /etc/systemd/resolved.conf
+EOS
+
+lxc-attach -n $MACH -- bash <<EOS
+set -e
+systemctl restart systemd-resolved
+EOS
+
+lxc-attach -n $MACH -- bash <<EOS
+set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 echo $MACH > /etc/hostname
 sed -i 's/\(127.0.1.1\s*\).*$/\1$MACH/' /etc/hosts
