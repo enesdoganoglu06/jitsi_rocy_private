@@ -94,6 +94,7 @@ EOS
 # ------------------------------------------------------------------------------
 zsh <<EOS
 set -e
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 dnf install kmod alsa-utils -y
 EOS
 
