@@ -95,6 +95,7 @@ EOS
 zsh <<EOS
 set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+export DEBIAN_FRONTEND=noninteractive
 dnf install kmod alsa-utils -y
 EOS
 
@@ -105,6 +106,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+export DEBIAN_FRONTEND=noninteractive
 apt-get -dy reinstall hostname
 EOS
 
@@ -112,6 +114,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get -y dist-upgrade
 EOS
@@ -120,6 +123,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+export DEBIAN_FRONTEND=noninteractive
 apt-get -y install gnupg unzip jq
 apt-get -y install libnss3-tools
 apt-get -y install va-driver-all vdpau-driver-all
@@ -141,6 +145,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+export DEBIAN_FRONTEND=noninteractive
 apt-get -y --install-recommends install google-chrome-stable
 EOS
 
@@ -174,6 +179,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+export DEBIAN_FRONTEND=noninteractive
 apt-get -y install openjdk-11-jre-headless
 apt-get -y install \
     jibri=8.0-121-g27323fe-1
@@ -183,6 +189,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+export DEBIAN_FRONTEND=noninteractive
 apt-get -y purge upower
 EOS
 
@@ -190,6 +197,7 @@ EOS
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+export DEBIAN_FRONTEND=noninteractive
 apt-mark hold jibri
 EOS
 
