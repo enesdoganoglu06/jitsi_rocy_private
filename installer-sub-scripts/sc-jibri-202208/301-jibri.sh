@@ -81,7 +81,7 @@ done
 # ------------------------------------------------------------------------------
 # HOSTNAME
 # ------------------------------------------------------------------------------
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 echo $MACH > /etc/hostname
