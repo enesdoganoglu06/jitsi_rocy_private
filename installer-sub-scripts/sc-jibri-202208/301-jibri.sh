@@ -104,14 +104,12 @@ EOS
 # fake install
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY -dy reinstall hostname
 EOS
 
 # update
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY update
 apt-get $APT_PROXY -y dist-upgrade
 EOS
@@ -119,7 +117,6 @@ EOS
 # packages
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY -y install gnupg unzip jq
 apt-get $APT_PROXY -y install libnss3-tools
 apt-get $APT_PROXY -y install va-driver-all vdpau-driver-all
@@ -139,7 +136,6 @@ EOS
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY -y --install-recommends install google-chrome-stable
 EOS
 
@@ -170,7 +166,6 @@ EOS
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-export DEBIAN_FRONTEND=noninteractive
 apt-get $APT_PROXY -y install openjdk-11-jre-headless
 apt-get $APT_PROXY -y install \
     jibri=8.0-121-g27323fe-1
@@ -179,14 +174,12 @@ EOS
 # removed packages
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-export DEBIAN_FRONTEND=noninteractive
 apt-get -y purge upower
 EOS
 
 # hold
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-export DEBIAN_FRONTEND=noninteractive
 apt-mark hold jibri
 EOS
 
