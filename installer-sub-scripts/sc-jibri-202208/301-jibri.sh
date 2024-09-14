@@ -92,7 +92,7 @@ EOS
 # ------------------------------------------------------------------------------
 # HOST PACKAGES
 # ------------------------------------------------------------------------------
-zsh <<EOS
+bash <<EOS
 set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 dnf install kmod alsa-utils -y
@@ -102,20 +102,20 @@ EOS
 # PACKAGES
 # ------------------------------------------------------------------------------
 # fake install
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 apt-get -dy reinstall hostname
 EOS
 
 # update
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 apt-get update
 apt-get -y dist-upgrade
 EOS
 
 # packages
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 apt-get -y install gnupg unzip jq
 apt-get -y install libnss3-tools
@@ -126,7 +126,7 @@ EOS
 
 # google chrome
 cp etc/apt/sources.list.d/google-chrome.list $ROOTFS/etc/apt/sources.list.d/
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 wget -T 30 -qO /tmp/google-chrome.gpg.key \
     https://dl.google.com/linux/linux_signing_key.pub
@@ -134,13 +134,13 @@ apt-key add /tmp/google-chrome.gpg.key
 apt-get update
 EOS
 
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 apt-get -y --install-recommends install google-chrome-stable
 EOS
 
 # chromedriver
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 CHROME_VER=\$(dpkg -s google-chrome-stable | egrep "^Version" | \
     cut -d " " -f2 | cut -d. -f1-3)
@@ -157,14 +157,14 @@ EOS
 
 # jibri
 cp etc/apt/sources.list.d/jitsi-stable.list $ROOTFS/etc/apt/sources.list.d/
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 wget -T 30 -qO /tmp/jitsi.gpg.key https://download.jitsi.org/jitsi-key.gpg.key
 cat /tmp/jitsi.gpg.key | gpg --dearmor >/usr/share/keyrings/jitsi.gpg
 apt-get update
 EOS
 
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 apt-get -y install openjdk-11-jre-headless
 apt-get -y install \
@@ -172,13 +172,13 @@ apt-get -y install \
 EOS
 
 # removed packages
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 apt-get -y purge upower
 EOS
 
 # hold
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 apt-mark hold jibri
 EOS
@@ -187,7 +187,7 @@ EOS
 # SYSTEM CONFIGURATION
 # ------------------------------------------------------------------------------
 # disable ssh service
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 systemctl stop ssh.service
 systemctl disable ssh.service
@@ -212,7 +212,7 @@ cp $ROOTFS/etc/jitsi/jibri/xorg-video-dummy.conf \
     $ROOTFS/etc/jitsi/jibri/xorg-video-dummy.conf.org
 
 # meta
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 mkdir -p /root/meta
 VERSION=\$(apt-cache policy jibri | grep Installed | rev | cut -d' ' -f1 | rev)
@@ -220,7 +220,7 @@ echo \$VERSION > /root/meta/jibri-version
 EOS
 
 # jibri groups
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 usermod -aG adm,audio,video,plugdev jibri
 EOS
@@ -233,7 +233,7 @@ cp home/jibri/.ssh/jibri-config $ROOTFS/home/jibri/.ssh/
     cp /root/.ssh/jibri $ROOTFS/home/jibri/.ssh/ || \
     true
 
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 chown jibri:jibri /home/jibri/.ssh -R
 EOS
@@ -250,13 +250,13 @@ cp home/jibri/.icewm/startup $ROOTFS/home/jibri/.icewm/
 chmod 755 $ROOTFS/home/jibri/.icewm/startup
 
 # recordings directory
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 chown jibri:jibri /usr/local/eb/recordings -R
 EOS
 
 # pki
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 mkdir -p /home/jibri/.pki/nssdb
 chmod 700 /home/jibri/.pki
@@ -279,21 +279,21 @@ chmod 744 $ROOTFS/usr/local/sbin/jibri-ephemeral-config
 cp etc/systemd/system/jibri-ephemeral-config.service \
     $ROOTFS/etc/systemd/system/
 
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 systemctl daemon-reload
 systemctl enable jibri-ephemeral-config.service
 EOS
 
 # jibri service
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 systemctl enable jibri.service
 systemctl start jibri.service
 EOS
 
 # jibri vnc
-lxc-attach -n $MACH -- zsh <<EOS
+lxc-attach -n $MACH -- bash <<EOS
 set -e
 mkdir -p /home/jibri/.vnc
 x11vnc -storepasswd jibri /home/jibri/.vnc/passwd
