@@ -83,18 +83,6 @@ done
 # ------------------------------------------------------------------------------
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
-echo "[Resolve]" > /etc/systemd/resolved.conf
-echo "DNS=8.8.8.8" >> /etc/systemd/resolved.conf
-echo "FallbackDNS=8.8.4.4" >> /etc/systemd/resolved.conf
-EOS
-
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
-systemctl restart systemd-resolved
-EOS
-
-lxc-attach -n $MACH -- zsh <<EOS
-set -e
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 echo $MACH > /etc/hostname
 sed -i 's/\(127.0.1.1\s*\).*$/\1$MACH/' /etc/hosts
@@ -116,12 +104,14 @@ EOS
 # fake install
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 apt-get -dy reinstall hostname
 EOS
 
 # update
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 apt-get update
 apt-get -y dist-upgrade
 EOS
@@ -129,6 +119,7 @@ EOS
 # packages
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 apt-get -y install gnupg unzip jq
 apt-get -y install libnss3-tools
 apt-get -y install va-driver-all vdpau-driver-all
@@ -140,6 +131,7 @@ EOS
 cp etc/apt/sources.list.d/google-chrome.list $ROOTFS/etc/apt/sources.list.d/
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 wget -T 30 -qO /tmp/google-chrome.gpg.key \
     https://dl.google.com/linux/linux_signing_key.pub
 apt-key add /tmp/google-chrome.gpg.key
@@ -148,12 +140,14 @@ EOS
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 apt-get -y --install-recommends install google-chrome-stable
 EOS
 
 # chromedriver
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 CHROME_VER=\$(dpkg -s google-chrome-stable | egrep "^Version" | \
     cut -d " " -f2 | cut -d. -f1-3)
 CHROMELAB_LINK="https://googlechromelabs.github.io/chrome-for-testing"
@@ -171,6 +165,7 @@ EOS
 cp etc/apt/sources.list.d/jitsi-stable.list $ROOTFS/etc/apt/sources.list.d/
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 wget -T 30 -qO /tmp/jitsi.gpg.key https://download.jitsi.org/jitsi-key.gpg.key
 cat /tmp/jitsi.gpg.key | gpg --dearmor >/usr/share/keyrings/jitsi.gpg
 apt-get update
@@ -178,6 +173,7 @@ EOS
 
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 apt-get -y install openjdk-11-jre-headless
 apt-get -y install \
     jibri=8.0-121-g27323fe-1
@@ -186,12 +182,14 @@ EOS
 # removed packages
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 apt-get -y purge upower
 EOS
 
 # hold
 lxc-attach -n $MACH -- zsh <<EOS
 set -e
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 apt-mark hold jibri
 EOS
 
