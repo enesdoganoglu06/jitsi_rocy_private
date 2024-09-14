@@ -94,9 +94,8 @@ EOS
 # ------------------------------------------------------------------------------
 zsh <<EOS
 set -e
-export DEBIAN_FRONTEND=noninteractive
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
-dnf $APT_PROXY -y install kmod alsa-utils
+dnf install kmod alsa-utils -y
 EOS
 
 # ------------------------------------------------------------------------------
